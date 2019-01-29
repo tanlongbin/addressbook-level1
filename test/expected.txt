@@ -268,6 +268,68 @@
 || 
 || 2 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  update]
+|| Invalid command format: update 
+|| update: Updates a person's information identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: update 1 John Doe p/98765432 e/johnd@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  update NotInt Valid Name p/12345 e/valid@email.com]
+|| Invalid command format: update 
+|| update: Updates a person's information identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: update 1 John Doe p/98765432 e/johnd@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  update 1 Valid Name p/12345 valid@email.butNoPrefix]
+|| Invalid command format: update 
+|| update: Updates a person's information identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: update 1 John Doe p/98765432 e/johnd@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  update 1 Valid Name 12345 e/valid@email.butPhonePrefixMissing]
+|| Invalid command format: update 
+|| update: Updates a person's information identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: update 1 John Doe p/98765432 e/johnd@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  update -1 Valid Name p/12345 e/valid@email.com]
+|| Invalid command format: update 
+|| update: Updates a person's information identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: update 1 John Doe p/98765432 e/johnd@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  update 0 Valid Name p/12345 e/valid@email.com]
+|| Invalid command format: update 
+|| update: Updates a person's information identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: update 1 John Doe p/98765432 e/johnd@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  update 3 Valid Name p/12345 e/valid@email.com]
+|| The person index provided is invalid
+|| ===================================================
+|| Enter command: || [Command entered:  update 1 Betsy Choo  p/222222  e/betsychoo@nus.edu.sg]
+|| Person File Successfully Updated: Betsy Choo, Phone: 222222, Email: betsychoo@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  find Dickson]
+|| 	1. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 1 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  update 1 Dickson See  p/242424  e/dicksonsee@nus.edu.sg]
+|| Person File Successfully Updated: Dickson See, Phone: 242424, Email: dicksonsee@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: betsychoo@nus.edu.sg
+|| 	2. Dickson See  Phone Number: 242424  Email: dicksonsee@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
 || ===================================================

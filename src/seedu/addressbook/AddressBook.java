@@ -123,7 +123,8 @@ public class AddressBook {
     private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
 
     private static final String COMMAND_UPDATE_WORD = "update";
-    private static final String COMMAND_UPDATE_DESC = "Update a person's information identified by the index number used in ";
+    private static final String COMMAND_UPDATE_DESC = "Updates a person's information identified by the index number"
+                                                    + " used in the last find/list call.";
     private static final String COMMAND_UPDATE_PARAMETER = "INDEX " + COMMAND_ADD_PARAMETERS;
     private static final String COMMAND_UPDATE_EXAMPLE = COMMAND_UPDATE_WORD + " 1 John Doe p/98765432 e/johnd@gmail.com";
 
@@ -608,8 +609,10 @@ public class AddressBook {
      */
     private static String executeUpdatePerson(String commandArgs)   {
         final String[] updateStringSplit = splitIndexAndPersonData(commandArgs);
+        final Optional<String[]> decodeResult = decodePersonFromString(updateStringSplit[1]);
 
-        if (!isDeletePersonArgsValid(updateStringSplit[0])) {
+        // checks if args are valid (decode result will not be present if the person is invalid)
+        if (!isDeletePersonArgsValid(updateStringSplit[0]) || !decodeResult.isPresent()) {
             return getMessageForInvalidCommandInput(COMMAND_UPDATE_WORD, getUsageInfoForUpdateCommand());
         }
         final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(updateStringSplit[0]);
@@ -618,20 +621,12 @@ public class AddressBook {
         }
         final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
         if (deletePersonFromAddressBook(targetInModel))   {
-            // try decoding a person from the raw args
-            final Optional<String[]> decodeResult = decodePersonFromString(updateStringSplit[1]);
-
-            // checks if args are valid (decode result will not be present if the person is invalid)
-            if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_UPDATE_WORD, getUsageInfoForUpdateCommand());
-            }
-            // add the person as specified
+            // update the person as specified
             final String[] personToUpdate = decodeResult.get();
             addPersonToAddressBook(personToUpdate);
             return getMessageForSuccessfulUpdatePerson(personToUpdate);// success
             }   else return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
-
 
     /**
      * Displays all persons in the address book to the user; in added order.

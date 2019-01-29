@@ -101,6 +101,23 @@ Deletes the 2nd person in the address book.
 `delete 1` +
 Deletes the 1st person in the results of the `find` command.
 
+=== Updating a person: `update`
+
+Updates the specified person in the address book with a new set of information. +
+Format: `update INDEX NAME p/PHONE_NUMBER e/EMAIL`
+
+Examples:
+
+* `list` +
+`update 1 John Doo p/23456789 e/johndoo@gmail.com` +
+Update the information for the 1st person in the address book.
+
+[NOTE]
+====
+The index refers to the index numbers shown in the most recent listing. +
+All information field of the selected listing will be replaced by the new input.
+====
+
 === Clearing all entries: `clear`
 
 Clears all entries from the address book. +

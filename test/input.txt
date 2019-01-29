@@ -92,6 +92,33 @@
   list
 
 ##########################################################
+# test update person command
+##########################################################
+
+# last active view: [1] betsy [2] charlie
+
+  # should catch invalid args format
+  update
+  update NotInt Valid Name p/12345 e/valid@email.com
+  update 1 Valid Name p/12345 valid@email.butNoPrefix
+  update 1 Valid Name 12345 e/valid@email.butPhonePrefixMissing
+
+  # should catch invalid index
+  update -1 Valid Name p/12345 e/valid@email.com
+  update 0 Valid Name p/12345 e/valid@email.com
+  update 3 Valid Name p/12345 e/valid@email.com
+
+  # should have updated based on last active view's index
+  update 1 Betsy Choo  p/222222  e/betsychoo@nus.edu.sg
+
+  # should have updated based on last active view's index
+  find Dickson
+  update 1 Dickson See  p/242424  e/dicksonsee@nus.edu.sg
+
+  # listing indexes get updated on next request
+  list
+
+##########################################################
 # test clear command
 ##########################################################
 
