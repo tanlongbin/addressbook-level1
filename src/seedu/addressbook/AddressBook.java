@@ -90,6 +90,7 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
+    private static final String MESSAGE_UPDATED = "Person File Successfully Updated: %1$s, Phone: %2$s, Email: %3$s";
 
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
@@ -120,6 +121,11 @@ public class AddressBook {
                                                     + "the last find/list call.";
     private static final String COMMAND_DELETE_PARAMETER = "INDEX";
     private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
+
+    private static final String COMMAND_UPDATE_WORD = "update";
+    private static final String COMMAND_UPDATE_DESC = "Update a person's information identified by the index number used in ";
+    private static final String COMMAND_UPDATE_PARAMETER = "INDEX " + COMMAND_ADD_PARAMETERS;
+    private static final String COMMAND_UPDATE_EXAMPLE = COMMAND_UPDATE_WORD + " 1 John Doe p/98765432 e/johnd@gmail.com";
 
     private static final String COMMAND_CLEAR_WORD = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
@@ -379,6 +385,8 @@ public class AddressBook {
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+        case COMMAND_UPDATE_WORD:
+            return executeUpdatePerson(commandArgs);
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -397,6 +405,18 @@ public class AddressBook {
         final String[] split =  rawUserInput.trim().split("\\s+", 2);
         return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
+
+    /**
+     * Splits update command arguments string into index and person data
+     *
+     * @return  size 2 array; first element is the index and second element is the rest of the
+     * arguments string containing the person data
+     */
+    private static String[] splitIndexAndPersonData(String commandArgs) {
+        final String[] split = commandArgs.trim().split("\\s+", 2);
+        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+    }
+
 
     /**
      * Constructs a generic feedback message for an invalid command from user, with instructions for correct usage.
@@ -440,6 +460,18 @@ public class AddressBook {
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+    }
+
+    /**
+     * Constructs a feedback message for a successful update person command execution.
+     *
+     * @see #executeUpdatePerson(String)
+     * @param updatedPerson person who was successfully updated
+     * @return successful update person feedback message
+     */
+    private static String getMessageForSuccessfulUpdatePerson(String[] updatedPerson) {
+        return String.format(MESSAGE_UPDATED,
+                getNameFromPerson(updatedPerson), getPhoneFromPerson(updatedPerson), getEmailFromPerson(updatedPerson));
     }
 
     /**
@@ -567,6 +599,39 @@ public class AddressBook {
         clearAddressBook();
         return MESSAGE_ADDRESSBOOK_CLEARED;
     }
+
+    /**
+     * Updates person identified using last displayed index.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeUpdatePerson(String commandArgs)   {
+        final String[] updateStringSplit = splitIndexAndPersonData(commandArgs);
+
+        if (!isDeletePersonArgsValid(updateStringSplit[0])) {
+            return getMessageForInvalidCommandInput(COMMAND_UPDATE_WORD, getUsageInfoForUpdateCommand());
+        }
+        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(updateStringSplit[0]);
+        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+        }
+        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+        if (deletePersonFromAddressBook(targetInModel))   {
+            // try decoding a person from the raw args
+            final Optional<String[]> decodeResult = decodePersonFromString(updateStringSplit[1]);
+
+            // checks if args are valid (decode result will not be present if the person is invalid)
+            if (!decodeResult.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_UPDATE_WORD, getUsageInfoForUpdateCommand());
+            }
+            // add the person as specified
+            final String[] personToUpdate = decodeResult.get();
+            addPersonToAddressBook(personToUpdate);
+            return getMessageForSuccessfulUpdatePerson(personToUpdate);// success
+            }   else return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+    }
+
 
     /**
      * Displays all persons in the address book to the user; in added order.
@@ -1116,6 +1181,13 @@ public class AddressBook {
     private static String getUsageInfoForClearCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
+    }
+
+    /** Returns the string for showing 'update' command usage instruction */
+    private static String getUsageInfoForUpdateCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_UPDATE_WORD, COMMAND_UPDATE_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_UPDATE_PARAMETER) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_UPDATE_EXAMPLE) + LS;
     }
 
     /** Returns the string for showing 'view' command usage instruction */
